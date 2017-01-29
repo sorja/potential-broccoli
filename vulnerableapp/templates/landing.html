@@ -23,7 +23,7 @@
 
         {% if session['email'] %}
 
-          <a class="nav-item is-active">
+          <a href="/logout" class="nav-item is-active">
               Hello, {{session['email']}}
           </a>
         
@@ -55,10 +55,18 @@
       <h2 class="subtitle">
         Potentially
       </h2>
-        {% if session['email'] %}
+        {% if session['user'] %}
+        <form action="/messages" method="POST">
+          <p class="control has-addons has-addons-centered">
+            <input name="message" class="input" type="text" placeholder="Enter message">
+            <!--vulnerability-->
+            <input name="email" type="hidden" value={{session['email']}} />
+            <button type="submit" class="button is-primary">
+              bip bop
+            </button>
+          </p>        
+        </form>
 
-              Enter message:
-        
         {% endif %}
     </div>
   </div>
