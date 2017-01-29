@@ -11,6 +11,7 @@ Cyber Security Base - Course Project I :: mooc.fi
 - `./init`
 - `./run (--debug)`
 
+## Vulnerabilities and explanations
 ```
 My project has 5 different security flaws, Injection, Session management, XSS, Insecure object data references and CSRF. The project itself is written with a microframework on python called Flask and it's using psycopg2 to connect to a PostgreSQL database.  The project can be found in github, under https://github.com/sorja/potential-broccoli .
 
