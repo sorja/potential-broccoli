@@ -18,23 +18,30 @@ if __name__ == "__main__":
 @app.route("/")
 def landing():
     if 'user' in session.keys():
-        user_messages(session['user'][0])
+        session['user_messages'] = user_messages(session['user'][0])
+    return render_template('landing.html')
+
+@app.route("/message/<user_id>/<message>")
+def post_message(user_id, message):
+    message_create(user_id, message)
     return render_template('landing.html')
 
 @app.route("/messages", methods=['POST', 'GET'])
 def messages():
     print request.form
     print request.method
+
     if request.method == 'POST':
-        parent_id = request.form['parent_id'] or None
+        # parent_id = request.form['parent_id'] or None
         message = request.form['message']
         # this is vulnerability
-        email = request.form['email']
-        user_id = user_messages(email)[0]['user_id']
-        message_create(user_id, message, parent_id)
+        # email = request.form['email']
+        user_id = request.form['id']
+        session['other_messages'] = message_create(user_id, message)
+        session['user_messages'] = user_messages(user_id)
     if request.method == 'GET':
         user_messages(session['email'])
-    return render_template('landing.html')
+    return redirect(url_for('landing'))
 
     
 
@@ -97,6 +104,7 @@ def user_register(email, password):
         conn.rollback()
         raise
     finally:
+        conn.commit()
         cursor.close()
         conn.close()
     return result
@@ -108,7 +116,7 @@ def user_messages(user_id):
     cursor = conn.cursor(cursor_factory=DictCursor)
     try:
         cursor.execute(SQL, data)
-        result = cursor.fetchmany()
+        result = cursor.fetchall()
     except:
         conn.rollback()
         raise
@@ -117,21 +125,24 @@ def user_messages(user_id):
         conn.close()
     return result
 
-def message_create(user_id, message, parent_id = None):
-    SQL = "INSERT INTO users (user_id, message) VALUES (%s, %s) RETURNING *"
-    data = (user_id, message, parent_id)
+def message_create(user_id, message, parent_id=None):
+    SQL = "INSERT INTO messages (user_id, message) VALUES (%s, %s) RETURNING *"
+    data = [user_id, message]
     
     if parent_id:
-        SQL = "INSERT INTO users (user_id, message, parent_id) VALUES (%s, %s, %s) RETURNING *"
+        SQL = "INSERT INTO messages (user_id, message, parent_id) VALUES (%s, %s, %s) RETURNING *"
+        data = data + [parent_id]
+
     conn = psycopg2.connect("dbname=broccoli user=possibly")
     cursor = conn.cursor(cursor_factory=DictCursor)
     try:
         cursor.execute(SQL, data)
-        result = cursor.fetchone()
+        result = cursor.fetchall()
     except:
         conn.rollback()
         raise
     finally:
+        conn.commit()
         cursor.close()
         conn.close()
     return result

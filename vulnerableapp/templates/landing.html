@@ -60,12 +60,15 @@
           <p class="control has-addons has-addons-centered">
             <input name="message" class="input" type="text" placeholder="Enter message">
             <!--vulnerability-->
-            <input name="email" type="hidden" value={{session['email']}} />
+            <input name="id" type="hidden" value={{session['user'][0]}} />
             <button type="submit" class="button is-primary">
               bip bop
             </button>
           </p>        
         </form>
+        {% for message in session['user_messages']|reverse %}
+          {% include "message.html" %}
+        {% endfor %}
 
         {% endif %}
     </div>
