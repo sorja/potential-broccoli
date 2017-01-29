@@ -1,0 +1,69 @@
+{% extends "index.html" %}
+{% block title %} Potentially {% endblock %}
+
+
+{% block content %}
+
+<section class="hero is-success is-fullheight">
+  <!-- Hero header: will stick at the top -->
+  <div class="hero-head">
+    <header class="nav">
+      <div class="container">
+        <div class="nav-left">
+          <a class="nav-item">
+            <img class="icon-color" src="{{ url_for('static', filename='img/broccoli.svg') }}" alt="Logo">
+          </a>
+        </div>
+        <span class="nav-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <div class="nav-right nav-menu">
+
+        {% if session['email'] %}
+
+          <a class="nav-item is-active">
+              Hello, {{session['email']}}
+          </a>
+        
+        {% else %}
+
+          <a onClick=openModal("login") class="nav-item is-active">
+              Login
+          </a>
+          
+           <span class="nav-item">
+            <a onClick=openModal("register") class="button is-success is-inverted">
+              <span>Register</span>
+            </a>
+          </span>
+
+        {% endif %}
+
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- Hero content: will be in the middle -->
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title">
+        Broccoli <img class="icon is-medium" src="{{ url_for('static', filename='img/broccoli.svg') }}"/>
+      </h1>
+      <h2 class="subtitle">
+        Potentially
+      </h2>
+        {% if session['email'] %}
+
+              Enter message:
+        
+        {% endif %}
+    </div>
+  </div>
+
+  {% include "login.html" %}
+  {% include "register.html" %}
+
+{% endblock %}

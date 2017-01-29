@@ -1,0 +1,49 @@
+{% extends "modal.html" %}
+
+{% set name = "Login" %}
+
+<!-- class, name, type, placeholder-->
+{% set fields = [
+    ('input', 'email', 'email', 'hello@vulnerabilities.com', "Incorrect email"),
+    ('input', 'password', 'password', '*****', "Password too short")
+] -%}
+
+{% block header %}
+{% endblock %}
+
+
+{% block content %}
+
+  {% for class_name, name, type, placeholder, error_message in fields %}
+
+    <p class="control has-icon has-icon-right">
+
+      {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+          {% for error in errors %}
+
+            {% if name in error|lower %}
+              {% set is_erro = true %}
+            {% endif %}
+          
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+        <label class="label">{{name|capitalize}}</label>
+        <input class="{{class_name}} {{"is-danger" if is_error }}" name="{{name}}" type="{{type}}" placeholder="{{placeholder}}" value="{{request.form[name]}}">
+        {% if is_error %}
+            <span class="help is-danger">{{error}}</span>
+        {% endif %}
+
+        {% set is_error = false %}
+    </p>
+
+  {% endfor %}
+
+{% endblock %}
+
+{% block footer %}
+    <button type="submit" class="button is-primary">Login</button>
+    <!--Laziness-->
+    <a onClick="closeModal(this.parentElement.parentElement.parentElement)" class="button is-danger is-outlined">Cancel</a>
+{% endblock %}
